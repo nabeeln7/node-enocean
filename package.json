@@ -1,17 +1,14 @@
 {
-  "name": "node-enocean",
-  "version": "3.3.1",
-  "description": "full implementation of the enocean protocol (ESP3 + EEP2.6)",
+  "name": "@nabeeln7/node-enocean",
+  "version": "1.0.0",
+  "description": "(fixed deps for nodejs v12.6.2) full implementation of the enocean protocol (ESP3 + EEP2.6)",
   "main": "index.js",
-  "engines": {
-    "node": ">=7.0.0"
-  },
   "scripts": {
     "test": "mocha --recursive"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Holger-Will/node-enocean.git"
+    "url": "https://github.com/nabeeln7/node-enocean.git"
   },
   "keywords": [
     "enocean",
@@ -32,7 +29,6 @@
   "devDependencies": {
     "chai": "^3.3.0",
     "mocha": "^2.3.3",
-    "node-enocean-button": "^3.0.0",
-    "node-enocean-dimmer": "^2.2.1"
+    "node-enocean-button": "^3.0.0"
   }
 }
