@@ -105,35 +105,42 @@ function SerialPortListener( config ) {
 	this.receive     = function( buf ) {
 		// handle the receiving of telegrams. this can be used to simulate the recieving part... good for testing ;-)
 		var telegram = new Telegram( ) // create a new telegram
-		telegram.loadFromBuffer( buf ) // and fill it with the data from the Buffer
-		this.emitters.forEach( function( emitter ) {
-			emitter.emit( "data" , telegram ) // tell everyone we've got a telegram
-		} )
-		if( telegram.packetType == 2 ) {
-		// handle getting the base address. if we request request the base address from our device, it response with a telegram of type 2
-		// the telegram implemetation has already extracted the address.
-			if( telegram.hasOwnProperty( "base" ) ) { // if this Response holds our base address
-				this.base       = telegram.base // make it globaly available
-				configFile.base = telegram.base // write to the config file
-				fs.writeFile( this.configFilePath , JSON.stringify( configFile , null , 4 ), function( err ) {
-    				if(err) {
-    					// error saving config file
-    				} else {
-    					// when the file was successfully saved
-    					state = "ready" // part of the get Base Hack
-    					this.emitters.forEach( function( emitter ) {
-    						// emit the ready event. when we start listening and we dont know the base address, the ready event is not fired. so do it here.
-    						// but remember that every call to getBase also emits "ready"
-							emitter.emit( "ready" )
-    						emitter.emit( "base" , telegram.base ) // also fire the base event to everyone. also propagete the base address
-						} )
-   			 		}
-				}.bind( this ) ) // bind "this" to the enocean object
-			}
+		try {
+			telegram.loadFromBuffer( buf ) // and fill it with the data from the Buffer
 			this.emitters.forEach( function( emitter ) {
-				emitter.emit( "response" , telegram ) // emit all other response telegrams to everyone
+				emitter.emit( "data" , telegram ) // tell everyone we've got a telegram
 			} )
-		}
+			if( telegram.packetType == 2 ) {
+			// handle getting the base address. if we request request the base address from our device, it response with a telegram of type 2
+			// the telegram implemetation has already extracted the address.
+				if( telegram.hasOwnProperty( "base" ) ) { // if this Response holds our base address
+					this.base       = telegram.base // make it globaly available
+					configFile.base = telegram.base // write to the config file
+					fs.writeFile( this.configFilePath , JSON.stringify( configFile , null , 4 ), function( err ) {
+	    				if(err) {
+	    					// error saving config file
+	    				} else {
+	    					// when the file was successfully saved
+	    					state = "ready" // part of the get Base Hack
+	    					this.emitters.forEach( function( emitter ) {
+	    						// emit the ready event. when we start listening and we dont know the base address, the ready event is not fired. so do it here.
+	    						// but remember that every call to getBase also emits "ready"
+								emitter.emit( "ready" )
+	    						emitter.emit( "base" , telegram.base ) // also fire the base event to everyone. also propagete the base address
+							} )
+	   			 		}
+					}.bind( this ) ) // bind "this" to the enocean object
+				}
+				this.emitters.forEach( function( emitter ) {
+					emitter.emit( "response" , telegram ) // emit all other response telegrams to everyone
+				} )
+			}			
+		} catch(err) {
+			// nabeel: temporary fix for buffer split into parts issue
+			if (err instanceof TypeError) {
+				console.error('malformed buffer parsing caused error');
+			}
+        }
 	}.bind( this )
 
 	this.send = function( msg ) {
