@@ -1,6 +1,6 @@
 {
   "name": "@nabeeln7/node-enocean",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "(fixed deps for nodejs v12.6.2) full implementation of the enocean protocol (ESP3 + EEP2.6)",
   "main": "index.js",
   "scripts": {

@@ -138,7 +138,6 @@ function SerialPortListener( config ) {
 		} catch(err) {
 			// nabeel: temporary fix for buffer split into parts issue
 			if (err instanceof TypeError) {
-				console.error('malformed buffer parsing caused error');
 			}
         }
 	}.bind( this )
